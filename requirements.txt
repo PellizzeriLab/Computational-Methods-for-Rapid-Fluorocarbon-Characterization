@@ -1,0 +1,26 @@
+# Core scientific computing
+numpy
+pandas
+matplotlib
+scipy
+
+# Machine learning / statistics
+scikit-learn
+
+# Cheminformatics
+rdkit
+
+# Thermochemistry packages
+pmutt
+pgradd
+
+# YAML I/O
+ruamel.yaml
+
+# Jupyter environment
+jupyter
+tqdm
+tabulate
+
+# ASE (Atomic Simulation Environment) — for reading Gaussian log files
+ase
