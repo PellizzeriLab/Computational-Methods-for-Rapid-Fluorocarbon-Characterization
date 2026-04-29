@@ -1,103 +1,142 @@
-This repository contains the supporting information, datasets, and computational workflows associated with the manuscript Computational Methods for Rapid Fluorocarbon Characterization.
-It provides reproducible tools for evaluating and developing thermochemical group additivity models, with a focus on fluorocarbon‑containing molecules.
+# Computational Methods for Rapid Fluorocarbon Characterization
 
-Repository Structure:
+Supporting information, datasets, and computational workflows for the manuscript
+*Computational Methods for Rapid Fluorocarbon Characterization*.
+
+This repository provides reproducible tools for developing and evaluating
+Benson-style group-additivity (GA) thermochemical models, with a focus on
+fluorocarbon-containing molecules.
+
+---
+
+## Repository Structure
+
+```
 .
-├── BensonGAF/                    # Group additivity parameter files 
-├── Data/                         # Raw and processed datasets
-├── pGrAdd_with_GAF.ipynb         # Main analysis notebook 
-├── LICENSE                       # MIT License
-└── README.md                     # Project documentation
+├── BensonGAF/                          # BensonGAF group-additivity library
+│   ├── library.yaml                    # Library entry point (lists included parameter files)
+│   ├── scheme.yaml                     # Group-matching patterns (SMARTS-like rules)
+│   └── gas_benson/
+│       └── fluorocarbon_groups.yaml    # Fitted fluorocarbon group parameters
+├── Data/                               # Datasets and regression notebook
+│   ├── fluorocarbon_DFT_thermochemistry.csv   # DFT-derived H, S, Cp reference data
+│   ├── fluorocarbon_molecule_list.csv          # SMILES and names for training molecules
+│   ├── fluorocarbon_group_matrix.csv           # Group-count matrix (molecules × groups)
+│   └── GAF_Group_Regression.ipynb      # Notebook: fit GA parameters from DFT data
+├── pGrAdd_with_GAF.ipynb               # Notebook: predict thermochemistry with BensonGAF
+├── requirements.txt                    # Python package dependencies
+├── LICENSE                             # MIT License
+└── README.md
+```
 
-Project Overview:
-Fluorocarbon thermochemistry is notoriously difficult due to:
+---
 
-Strong C–F bonds and unusual vibrational mode behavior
+## Project Overview
 
-Sparse high‑quality reference data
+Fluorocarbon thermochemistry is challenging due to:
 
-Poor performance of harmonic approximations for low‑frequency modes
-
-Limited group additivity parameters for fluorinated functional groups
+- Strong C–F bonds and unusual vibrational mode behavior
+- Sparse high-quality reference data
+- Limited Benson group-additivity parameters for fluorinated functional groups
 
 This project addresses these challenges by providing:
 
-Benson‑style group additivity workflows for enthalpy, entropy, and heat capacity
+- Benson-style GA workflows for enthalpy (H), entropy (S), and heat capacity (Cp)
+- DFT-derived reference data computed with statistical-mechanics corrections
+- Cross-validation and Grubbs' outlier detection for robust parameter estimation
+- A ready-to-use `BensonGAF` library compatible with the `pgradd` Python package
 
-Cross‑validation and outlier detection to ensure robust parameter estimation
+---
 
-Fluorocarbon‑specific corrections integrated into the GAF framework
+## Notebooks
 
-Transparent, reproducible Jupyter Notebook analysis
+### `pGrAdd_with_GAF.ipynb` — Predict Thermochemistry
 
-Main Notebook:
-pGrAdd_with_GAF.ipynb
-This notebook demonstrates the full workflow used in the manuscript:
+Uses the fitted `BensonGAF` library to:
 
-Implementing GAF library for determination of H, S and Cp for any structure with groups within GAF library
+- Estimate H, S, and Cp for any fluorocarbon SMILES with groups covered by the library
+- Batch-compare predictions against the DFT reference dataset and report absolute errors
 
-Comparison to raw DFT data with absolute errors to monitor performance
+### `Data/GAF_Group_Regression.ipynb` — Fit Group Parameters
 
-Analysis Notebook:
-GAF_Group_Regression.ipynb
-This notebook demonstrates the full workflow used in the manuscript:
+Fits new Benson GA parameters from DFT data:
 
-Dataset loading and preprocessing
+- Loads Gaussian log files and extracts thermochemical properties via statistical mechanics (pmutt)
+- Builds a group-count matrix from SMILES using pgradd
+- Fits group contributions by least-squares regression with k-fold cross-validation
+- Removes statistical outliers using an iterative Grubbs' test
+- Exports the fitted parameters to `BensonGAF/gas_benson/fluorocarbon_groups.yaml`
 
-Group assignment and feature construction
+---
 
-Model fitting and validation
+## Getting Started
 
-Error analysis and visualization
+### 1. Clone the repository
 
-Export of group contributions for downstream use
-
-It is designed to be self‑contained and easy to run in any standard scientific Python environment.
-
-Package Requirements
-Recommended Python packages:
-
-numpy
-
-pandas
-
-matplotlib
-
-scikit-learn
-
-ruamel.yaml
-
-jupyter
-
-rdkit 
-
-pmutt
-
-pgradd
-
-Getting Started
-Clone the repository:
-
-bash
+```bash
 git clone https://github.com/PellizzeriLab/Computational-Methods-for-Rapid-Fluorocarbon-Characterization.git
-Navigate into the project directory:
-
-bash
 cd Computational-Methods-for-Rapid-Fluorocarbon-Characterization
-Launch Jupyter:
+```
 
-bash
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Install the BensonGAF library into pgradd
+
+`pgradd` looks for named libraries inside its own `data/` directory.
+Copy the `BensonGAF/` folder there so that `GroupLibrary.Load('BensonGAF')` works:
+
+```bash
+# Find the pgradd data directory
+python -c "import pgradd, os; print(os.path.join(os.path.dirname(pgradd.__file__), 'data'))"
+```
+
+Then copy the library folder into that path, for example:
+
+```bash
+cp -r BensonGAF/ /path/to/pgradd/data/BensonGAF
+```
+
+The `BensonGAF/` folder must contain `library.yaml`, `scheme.yaml`, and the
+`gas_benson/` sub-directory with `fluorocarbon_groups.yaml`.
+
+### 4. Run the notebooks
+
+```bash
 jupyter notebook
-Open pGrAdd_with_GAF.ipynb and run the workflow.
+```
 
-License:
-This project is released under the MIT License.
-See the LICENSE file for details.
+Open `pGrAdd_with_GAF.ipynb` to predict thermochemical properties, or
+`Data/GAF_Group_Regression.ipynb` to re-fit the group parameters from scratch.
 
-Contributors:
-Sam C. Eccles
+---
 
-Steven Pellizzeri
+## Data Files
 
-Contact:
-For questions about the computational methods or manuscript, please contact the Pellizzeri Lab or open an issue in this repository.
+| File | Description |
+|------|-------------|
+| `Data/fluorocarbon_DFT_thermochemistry.csv` | DFT-derived H, S, and Cp (300–1500 K) for all training molecules |
+| `Data/fluorocarbon_molecule_list.csv` | SMILES strings and common names for all fluorocarbon training molecules |
+| `Data/fluorocarbon_group_matrix.csv` | Pre-built group-count matrix used as the regression feature matrix |
+| `BensonGAF/gas_benson/fluorocarbon_groups.yaml` | Fitted Benson group contributions — load with `GroupLibrary.Load('BensonGAF')` |
+
+---
+
+## License
+
+This project is released under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Contributors
+
+- Sam C. Eccles
+- Steven Pellizzeri
+
+## Contact
+
+For questions about the computational methods or manuscript, please contact the
+[Pellizzeri Lab](https://github.com/PellizzeriLab) or open an issue in this repository.
