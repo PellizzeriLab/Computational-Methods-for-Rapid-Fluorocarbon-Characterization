@@ -7,6 +7,13 @@ This repository provides reproducible tools for developing and evaluating
 Benson-style group-additivity (GA) thermochemical models, with a focus on
 fluorocarbon-containing molecules.
 
+## Citation
+
+If you use this repository, its data, or its workflows in your work,
+please cite the associated manuscript:
+
+Eccles, S. and Pellizzeri, S. *Expanded Group Additivity Framework for Thermochemical Prediction of Fluorocarbons and PFAS from Large Scale DFT Data*, Journal Name, Year, DOI.
+
 ---
 
 ## Repository Structure
