@@ -12,7 +12,7 @@ fluorocarbon-containing molecules.
 If you use this repository, its data, or its workflows in your work,
 please cite the associated manuscript:
 
-Eccles, S. and Pellizzeri, S. *Expanded Group Additivity Framework for Thermochemical Prediction of Fluorocarbons and PFAS from Large Scale DFT Data*, Journal Name, Year, DOI.
+Eccles, S. and Pellizzeri, S. *Expanded Group Additivity Framework for Thermochemical Prediction of Fluorocarbons and PFAS from Large Scale DFT Data*, J. Phys. Chem. A (2026), DOI: [10.1021/acs.jpca.6c03256](https://doi.org/10.1021/acs.jpca.6c03256).
 
 ---
 
